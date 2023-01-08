@@ -1,0 +1,8 @@
+.DS_Store
+.idea
+.vscode
+*/**
+!zsh/**
+zsh/.zcompcache
+zsh/.zsh_sessions
+!starship.toml

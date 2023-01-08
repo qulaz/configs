@@ -1,0 +1,4 @@
+export ALIASDIR=$HOME/.config/zsh/aliases
+
+source $ALIASDIR/soundcloud.zsh
+source $ALIASDIR/ytdl-mp3.zsh
