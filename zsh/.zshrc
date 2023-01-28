@@ -4,6 +4,7 @@ export CLICOLOR_FORCE=1
 export LSCOLORS="cxfxCxdxbgegedabagacad"
 export LS_COLORS="di=32:ln=35:so=1;32:pi=33:ex=31;46:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=30;43"
 zstyle ':completion:*:*:*:*:default' list-colors ${(s.:.)LS_COLORS}
+zstyle ':completion:*' menu select
 
 # History in cache directory:
 setopt histignoredups
@@ -16,12 +17,24 @@ HISTFILE=$HOME/.cache/zsh/history
 [ -f "$ZDOTDIR/.shortcutrc" ] && source "$ZDOTDIR/.shortcutrc"
 [ -f "$ZDOTDIR/aliases/.aliasrc" ] && source "$ZDOTDIR/aliases/.aliasrc"
 
-# Edit PATH
-export PATH="$PATH:/Users/qulaz/.local/bin:$GOROOT/bin:$GOPATH/bin:$HOME/bin:/opt/homebrew/opt/coreutils/libexec/gnubin"
+# Set PATH, MANPATH, etc., for Homebrew.
+eval "$(/opt/homebrew/bin/brew shellenv)"
+export HOMEBREW_NO_AUTO_UPDATE=1
 
-source $ZDOTDIR/zsh-autocomplete/zsh-autocomplete.plugin.zsh
-zstyle ':autocomplete:*' widget-style menu-select
-bindkey -M menuselect '\r' accept-line
+# pyenv
+export PYENV_ROOT=$HOME/.pyenv
+export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
+
+# Created by `pipx` on 2022-03-08 12:28:36
+export PATH="$HOME/.local/bin:$PATH"
+
+# gvm
+[[ -s "/Users/qulaz/.gvm/scripts/gvm" ]] && source "/Users/qulaz/.gvm/scripts/gvm"
+export PATH="$PATH:/Users/qulaz/.local/bin:$GOROOT/bin:$GOPATH/bin"
+
+# Edit PATH
+export PATH="$PATH:$HOME/bin"
 
 # Completitions
 _linkIfNeeded() {
@@ -35,8 +48,12 @@ _linkIfNeeded() {
 _linkIfNeeded "/Applications/Docker.app/Contents/Resources/etc/docker.zsh-completion" "_docker"
 _linkIfNeeded "/Applications/Docker.app/Contents/Resources/etc/docker-machine.zsh-completion" "_docker-machine"
 _linkIfNeeded "/Applications/Docker.app/Contents/Resources/etc/docker-compose.zsh-completion" "_docker-compose"
+fpath=($ZDOTDIR/zsh-completions/src $fpath)
+autoload -Uz compinit
+compinit
 
 # Load theme
 eval "$(starship init zsh)"
 
+source $ZDOTDIR/zsh-autosuggestions/zsh-autosuggestions.zsh
 source $ZDOTDIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh  2>/dev/null
